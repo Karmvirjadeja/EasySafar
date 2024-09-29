@@ -8,6 +8,7 @@ import {
   SelectTravelesList,
 } from "../constants/options"; // Your options array
 import { toast } from "sonner";
+import { chatSession } from "../service/AIModel";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
@@ -22,7 +23,7 @@ function CreateTrip() {
     console.log(formData);
   }, [formData]);
 
-  function onGenerateTrip() {
+  async function onGenerateTrip() {
     if (
       (formData?.noOfDays > 5 && !formData?.location) ||
       !formData?.budget ||
@@ -32,14 +33,12 @@ function CreateTrip() {
       toast("Please fill all the details or Enter Days less than 6 ");
       return;
     }
-    const FINAL_PROMPT = AI_PROMPT.replace(
-      `{location}`,
-      formData?.location?.label
-    )
+    const FINAL_PROMPT = AI_PROMPT.replace(`{location}`, formData?.location)
       .replace(`{totalDays}`, formData?.noOfDays)
       .replace(`{traveller}`, formData?.traveller)
       .replace(`{budget}`, formData?.budget);
-    console.log(FINAL_PROMPT);
+    const result = await chatSession.sendMessage(FINAL_PROMPT);
+    console.log(result?.response?.text());
   }
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
@@ -51,14 +50,11 @@ function CreateTrip() {
       <div className="mt-20 flex flex-col gap-10">
         <div>
           <h2 className="text-xl my-3 font-medium">Enter Destination 🏕️🏙️</h2>
-          <GooglePlacesAutocomplete
-            apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
-            selectProps={{
-              value: place,
-              onChange: (e) => {
-                setPlace(e);
-                handleInputChange("location", e);
-              },
+          <Input
+            placeholder={"Place,City,Country"}
+            type="text"
+            onChange={(e) => {
+              handleInputChange("location", e.target.value);
             }}
           />
         </div>
