@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // Ensure your alias is correctly set
-import { SelectBudgetOptions, SelectTravelesList } from "../constants/options"; // Your options array
+import {
+  AI_PROMPT,
+  SelectBudgetOptions,
+  SelectTravelesList,
+} from "../constants/options"; // Your options array
 import { toast } from "sonner";
 
 function CreateTrip() {
@@ -28,7 +32,14 @@ function CreateTrip() {
       toast("Please fill all the details or Enter Days less than 6 ");
       return;
     }
-    console.log(formData);
+    const FINAL_PROMPT = AI_PROMPT.replace(
+      `{location}`,
+      formData?.location?.label
+    )
+      .replace(`{totalDays}`, formData?.noOfDays)
+      .replace(`{traveller}`, formData?.traveller)
+      .replace(`{budget}`, formData?.budget);
+    console.log(FINAL_PROMPT);
   }
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
