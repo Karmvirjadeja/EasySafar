@@ -9,6 +9,7 @@ import {
 } from "../constants/options"; // Your options array
 import { toast } from "sonner";
 import { chatSession } from "../service/AIModel";
+import { Link } from "react-router-dom";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
@@ -113,7 +114,9 @@ function CreateTrip() {
         </div>
       </div>
       <div className="my-10 flex justify-end ">
-        <Button onClick={onGenerateTrip}>Create Trip</Button>
+        <Link to={"/usertrip"}>
+          <Button onClick={onGenerateTrip}>Create Trip</Button>
+        </Link>
       </div>
     </div>
   );
