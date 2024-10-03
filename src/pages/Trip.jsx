@@ -1,9 +1,19 @@
 import React from "react";
 import { useState } from "react";
+import InfoSection from "../view-trip/InfoSection";
 const Trip = () => {
   const [trip, setTrip] = useState([]);
 
-  return <div>{localStorage.getItem("TripData")}</div>;
+  return (
+    <>
+      <div className="p-10 md:px-20 lg:px-44 xl:px-56">
+        {<InfoSection trip={localStorage.getItem("TripData")} />}
+        {/*recommended Hotels */}
+        {/*Daily Plans */}
+        {/*Footer */}
+      </div>
+    </>
+  );
 };
 
 export default Trip;

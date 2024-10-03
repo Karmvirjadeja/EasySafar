@@ -39,6 +39,7 @@ function CreateTrip() {
       .replace(`{traveller}`, formData?.traveller)
       .replace(`{budget}`, formData?.budget);
     const result = await chatSession.sendMessage(FINAL_PROMPT);
+    console.log(result?.response?.text());
     localStorage.setItem("TripData", result?.response?.text());
   }
   return (
