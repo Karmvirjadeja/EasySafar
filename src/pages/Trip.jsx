@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import InfoSection from "../view-trip/InfoSection";
 import Hotels from "../view-trip/Hotels";
+import PlacesToVisit from "../view-trip/PlacesToVisit";
 const Trip = () => {
   const [trip, setTrip] = useState([]);
 
@@ -12,6 +13,7 @@ const Trip = () => {
         {/*recommended Hotels */}
         <Hotels />
         {/*Daily Plans */}
+        <PlacesToVisit />
         {/*Footer */}
       </div>
     </>

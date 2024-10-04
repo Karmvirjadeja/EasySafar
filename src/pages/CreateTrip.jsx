@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { useNavigate } from "react-router-dom"; // New import for programmatic navigation
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Ensure your alias is correctly set
+import { Input } from "@/components/ui/input";
 import {
   AI_PROMPT,
   SelectBudgetOptions,
   SelectTravelesList,
-} from "../constants/options"; // Your options array
+} from "../constants/options";
 import { toast } from "sonner";
 import { chatSession } from "../service/AIModel";
-import { Link } from "react-router-dom";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
-  const [formData, setformData] = useState([]);
+  const [formData, setFormData] = useState([]);
+  const navigate = useNavigate(); // For navigation after storing data
+
   function handleInputChange(name, value) {
-    setformData({
+    setFormData({
       ...formData,
       [name]: value,
     });
   }
+
   useEffect(() => {
     console.log(formData);
   }, [formData]);
@@ -34,14 +36,33 @@ function CreateTrip() {
       toast("Please fill all the details or Enter Days less than 6 ");
       return;
     }
-    const FINAL_PROMPT = AI_PROMPT.replace(`{location}`, formData?.location)
-      .replace(`{totalDays}`, formData?.noOfDays)
-      .replace(`{traveller}`, formData?.traveller)
-      .replace(`{budget}`, formData?.budget);
-    const result = await chatSession.sendMessage(FINAL_PROMPT);
 
-    localStorage.setItem("TripData", result?.response?.text());
+    try {
+      const FINAL_PROMPT = AI_PROMPT.replace(`{location}`, formData?.location)
+        .replace(`{totalDays}`, formData?.noOfDays)
+        .replace(`{traveller}`, formData?.traveller)
+        .replace(`{budget}`, formData?.budget);
+
+      const result = await chatSession.sendMessage(FINAL_PROMPT);
+      const tripData = result?.response?.text();
+
+      // Store the result in localStorage
+      if (tripData) {
+        localStorage.setItem("TripData", tripData);
+      }
+
+      // Check if the data is successfully stored before navigating
+      if (localStorage.getItem("TripData")) {
+        navigate("/usertrip"); // Navigate to /usertrip after successful storage
+      } else {
+        toast("Failed to store trip data. Please try again.");
+      }
+    } catch (error) {
+      toast("Error generating trip. Please try again.");
+      console.error(error);
+    }
   }
+
   return (
     <div className="sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 mt-10">
       <h2 className="font-bold text-3xl">Tell us your travel preferences</h2>
@@ -85,7 +106,7 @@ function CreateTrip() {
                 handleInputChange("budget", item.title);
               }}
               className={`p-4 border rounded-lg hover:shadow-xl ${
-                formData?.budget == item.title && "shadow-lg border-black"
+                formData?.budget === item.title && "shadow-lg border-black"
               }`}
             >
               <h2 className="text-4xl font-medium">{item.icon}</h2>
@@ -104,7 +125,7 @@ function CreateTrip() {
               key={index}
               onClick={() => handleInputChange("traveller", item.people)}
               className={`p-4 border rounded-lg hover:shadow-xl ${
-                formData?.traveller == item.people && "shadow-lg border-black"
+                formData?.traveller === item.people && "shadow-lg border-black"
               }`}
             >
               <h2 className="text-4xl font-medium">{item.icon}</h2>
@@ -114,10 +135,9 @@ function CreateTrip() {
           ))}
         </div>
       </div>
+
       <div className="my-10 flex justify-end ">
-        <Link to={"/usertrip"}>
-          <Button onClick={onGenerateTrip}>Create Trip</Button>
-        </Link>
+        <Button onClick={onGenerateTrip}>Create Trip</Button>
       </div>
     </div>
   );

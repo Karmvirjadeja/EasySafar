@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { IoMdDownload } from "react-icons/io";
 const InfoSection = () => {
   const tripData = JSON.parse(localStorage.getItem("TripData"));
-  console.log(typeof tripData);
-  const { hotels } = tripData;
-  if (hotels) console.log(hotels);
+  console.log(tripData);
+  const { hotels, location } = tripData;
+
   return (
     <div>
       <img
@@ -15,7 +15,7 @@ const InfoSection = () => {
       />
       <div className="flex justify-between items-center">
         <div className="my-5 flex flex-col gap-2">
-          <h2 className="font-bold text-2xl">{hotels[0].description}</h2>
+          <h2 className="font-bold text-2xl">{`${location.city}, ${location.state}, ${location.country}`}</h2>
           <div className="flex gap-5">
             <h2 className="p-1 px-3 bg-gray-200 rounded-full text-gray-500 text-xs md:text-lg">
               📅No of days selected by user
