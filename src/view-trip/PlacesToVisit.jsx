@@ -11,7 +11,7 @@ function PlacesToVisit() {
   });
   console.log(Plans);
   return (
-    <div>
+    <div className="mt-5">
       <h2 className="font-bold text-lg">Places to Visit</h2>
       <div>
         <div className="grid md: grid-cols-2 gap-5">

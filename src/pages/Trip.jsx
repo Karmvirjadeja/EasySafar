@@ -3,6 +3,7 @@ import { useState } from "react";
 import InfoSection from "../view-trip/InfoSection";
 import Hotels from "../view-trip/Hotels";
 import PlacesToVisit from "../view-trip/PlacesToVisit";
+
 const Trip = () => {
   const [trip, setTrip] = useState([]);
 
