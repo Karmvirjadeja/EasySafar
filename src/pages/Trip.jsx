@@ -7,7 +7,7 @@ const Trip = () => {
   return (
     <>
       <div className="p-10 md:px-20 lg:px-44 xl:px-56">
-        {<InfoSection trip={localStorage.getItem("TripData")} />}
+        {<InfoSection />}
         {/*recommended Hotels */}
         {/*Daily Plans */}
         {/*Footer */}
