@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { IoMdDownload } from "react-icons/io";
 const InfoSection = () => {
   const tripData = JSON.parse(localStorage.getItem("TripData"));
