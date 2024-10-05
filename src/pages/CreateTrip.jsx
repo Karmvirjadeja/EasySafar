@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // New import for programmatic navigation
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,11 +9,12 @@ import {
 } from "../constants/options";
 import { toast } from "sonner";
 import { chatSession } from "../service/AIModel";
+import ClipLoader from "react-spinners/ClipLoader"; // Importing the spinner
 
 function CreateTrip() {
-  const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
-  const navigate = useNavigate(); // For navigation after storing data
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   function handleInputChange(name, value) {
     setFormData({
@@ -33,9 +34,11 @@ function CreateTrip() {
       !formData?.traveller ||
       !formData?.noOfDays
     ) {
-      toast("Please fill all the details or Enter Days less than 6 ");
+      toast("Please fill all the details or Enter Days less than 6");
       return;
     }
+
+    setIsLoading(true); // Start loading
 
     try {
       const FINAL_PROMPT = AI_PROMPT.replace(`{location}`, formData?.location)
@@ -46,20 +49,20 @@ function CreateTrip() {
       const result = await chatSession.sendMessage(FINAL_PROMPT);
       const tripData = result?.response?.text();
 
-      // Store the result in localStorage
       if (tripData) {
         localStorage.setItem("TripData", tripData);
       }
 
-      // Check if the data is successfully stored before navigating
       if (localStorage.getItem("TripData")) {
-        navigate("/usertrip"); // Navigate to /usertrip after successful storage
+        navigate("/usertrip");
       } else {
         toast("Failed to store trip data. Please try again.");
       }
     } catch (error) {
       toast("Error generating trip. Please try again.");
       console.error(error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   }
 
@@ -74,7 +77,7 @@ function CreateTrip() {
         <div>
           <h2 className="text-xl my-3 font-medium">Enter Destination 🏕️🏙️</h2>
           <Input
-            placeholder={"Place,City,Country"}
+            placeholder={"Place, City, Country"}
             type="text"
             onChange={(e) => {
               handleInputChange("location", e.target.value);
@@ -136,9 +139,17 @@ function CreateTrip() {
         </div>
       </div>
 
-      <div className="my-10 flex justify-end ">
-        <Button onClick={onGenerateTrip}>Create Trip</Button>
+      <div className="my-10 flex justify-end">
+        <Button onClick={onGenerateTrip} disabled={isLoading}>
+          {isLoading ? "Generating Trip..." : "Create Trip"}
+        </Button>
       </div>
+
+      {isLoading && (
+        <div className="flex justify-center mt-5">
+          <ClipLoader color="#007bff" loading={isLoading} size={50} />
+        </div>
+      )}
     </div>
   );
 }
